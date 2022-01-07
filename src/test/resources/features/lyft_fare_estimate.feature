@@ -1,4 +1,4 @@
-@lyft
+@lyft @regression
 Feature: Searching Lyft fare details
 
   As a rider , I should be able to enter pickup and drop off locations so that I can see the estimated fare

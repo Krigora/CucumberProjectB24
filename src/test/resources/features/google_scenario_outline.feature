@@ -1,4 +1,4 @@
-@google_scenario_outline
+@google_scenario_outline @regression
 Feature: Data driven testing using Scenario outline with Examples table
 
   Scenario Outline: Google capital cities search
