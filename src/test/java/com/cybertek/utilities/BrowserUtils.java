@@ -15,9 +15,15 @@ import static org.junit.Assert.assertTrue;
 
 public class BrowserUtils {
 
+
+    public static void scrollDown(int pixels) {
+        JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+        js.executeScript("window.scrollBy(0, "+ pixels +")");
+    }
+
     /**
-    This method accepts String expected title
-    @param expectedTitle
+     This method accepts String expected title
+     @param expectedTitle
      */
     public static void assertTitle(String expectedTitle){
 
@@ -29,9 +35,9 @@ public class BrowserUtils {
         Assert.assertEquals(expectedTitle, actualTitle);
     }
 
-        /**
-        This method accepts a List<WebElements> and returns List<String>
-        @param webElementList
+    /**
+     This method accepts a List<WebElements> and returns List<String>
+     @param webElementList
      */
     public static List<String> getElementsText(List<WebElement> webElementList){
 
@@ -267,14 +273,11 @@ public class BrowserUtils {
     /*
     Method that will accept int  arg
     Wait for given second duration
-
     //1sec = 1000 milli seconds
     //1 * 1000 = 1000
-
         Thread.sleep(1000);
         Thread.sleep(2000);
         Thread.sleep(3000);
-
         BrowserUtils.sleep(1); --> 1 second
      */
     public static void sleep(int second) {
@@ -288,7 +291,6 @@ public class BrowserUtils {
         } catch (InterruptedException e) {
 
             System.out.println("something happened in the sleep method");
-
         }
 
     }

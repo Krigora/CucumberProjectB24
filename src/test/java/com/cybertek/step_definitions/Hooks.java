@@ -2,7 +2,6 @@ package com.cybertek.step_definitions;
 
 import com.cybertek.utilities.Driver;
 import io.cucumber.java.After;
-import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import org.openqa.selenium.OutputType;
@@ -36,7 +35,7 @@ public class Hooks {
         }
 
         System.out.println("AFTER - tearDown method is running after the scenario:" + scenario.getName());
-        Driver.closeDriver();
+      //  Driver.closeDriver();
     }
 
     /**
