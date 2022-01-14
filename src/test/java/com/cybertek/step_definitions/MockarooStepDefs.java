@@ -4,17 +4,15 @@ import com.cybertek.pages.MockarooPage;
 import com.cybertek.utilities.BrowserUtils;
 import com.cybertek.utilities.ConfigurationReader;
 import com.cybertek.utilities.Driver;
+import com.cybertek.utilities.ExcelUtil;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Assert;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,26 +84,41 @@ public class MockarooStepDefs {
     public void followingColumnsShouldBeDisplayedInExcelFile(List<String> expectedColumns)  throws Exception {
         //Open downloaded excel file
         String filePath = System.getProperty("user.home") + "/Downloads/MOCK_DATA.xlsx";
-        FileInputStream in = new FileInputStream(filePath);
-        XSSFWorkbook workbook = new XSSFWorkbook(in);
-        XSSFSheet worksheet = workbook.getSheetAt(0);
-        //get number of column names. top row and cells count
-        int excelHeadersCount = worksheet.getRow(0).getPhysicalNumberOfCells();
-        excelFileRowsCount = worksheet.getLastRowNum();
+        //open excel file using EcxelUtil
+        ExcelUtil excel = new ExcelUtil(filePath, "data");
+        // read and compare column names using ExcelUtil getColumnName
+        Assert.assertEquals(expectedColumns, excel.getColumnsNames());
 
-        List<String> actualColumns = new ArrayList<>();
-
-        //loop and read column names and store into List<String> actualColumns
-        for(int i = 0; i < excelHeadersCount; i++) {
-            actualColumns.add( worksheet.getRow(0).getCell(i).toString());
-        }
-
-        Assert.assertEquals(expectedColumns, actualColumns);
+//        FileInputStream in = new FileInputStream(filePath);
+//        XSSFWorkbook workbook = new XSSFWorkbook(in);
+//        XSSFSheet worksheet = workbook.getSheetAt(0);
+//        //get number of column names. top row and cells count
+//        int excelHeadersCount = worksheet.getRow(0).getPhysicalNumberOfCells();
+//        excelFileRowsCount = worksheet.getLastRowNum();
+//
+//        List<String> actualColumns = new ArrayList<>();
+//
+//        //loop and read column names and store into List<String> actualColumns
+//        for(int i = 0; i < excelHeadersCount; i++) {
+//            actualColumns.add( worksheet.getRow(0).getCell(i).toString());
+//        }
+//
+//        Assert.assertEquals(expectedColumns, actualColumns);
 
     }
+    String filePath = System.getProperty("user.home") + "/Downloads/MOCK_DATA.xlsx";
 
     @And("{int} rows of data should be displayed in excel file")
     public void rowsOfDataShouldBeDisplayedInExcelFile(int numberOfRows) {
+        ExcelUtil excel = new ExcelUtil(filePath, "data");
+        int excelFileRowsCount = excel.rowCount();
         Assert.assertEquals(numberOfRows , excelFileRowsCount);
+    }
+
+    @And("data should be present in excel file")
+    public void dataShouldBePresentInExcelFile() {
+        //open excel file, read data and print values
+        ExcelUtil excel = new ExcelUtil(filePath, "data");
+        System.out.println("Excel file data: " + excel.getDataList());
     }
 }
