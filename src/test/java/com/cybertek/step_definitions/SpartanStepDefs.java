@@ -5,17 +5,20 @@ import com.cybertek.pages.SpartanConfirmationPage;
 import com.cybertek.pages.SpartanHomePage;
 import com.cybertek.pages.SpartansDataTablePage;
 import com.cybertek.utilities.ConfigurationReader;
+import com.cybertek.utilities.DBUtils;
 import com.cybertek.utilities.Driver;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class SpartanStepDefs {
 
-    Map<String, String> spartanMap;
+    Map<String, String> spartanMap = new HashMap<>();
 
     @Given("User is on spartan home page")
     public void user_is_on_spartan_home_page() {
@@ -39,7 +42,7 @@ public class SpartanStepDefs {
     @When("enters following data and submits:")
     public void enters_following_data_and_submits(Map<String, String> spartanInfo) {
 
-      //  spartanMap.putAll(spartanInfo);
+       spartanMap.putAll(spartanInfo); //copy value of param
 
         AddSpartansPage addSpartanPage = new AddSpartansPage();
         addSpartanPage.name.sendKeys(spartanInfo.get("name"));
@@ -54,9 +57,32 @@ public class SpartanStepDefs {
         Assert.assertEquals("Successfully Added new Data!", confirmationPage.alertMessage.getText());
 
     }
-    @Then("data on confirmation page must be same")
-    public void data_on_confirmation_page_must_be_same() {
+
+
+    @Then("data on confirmation  page must be same")
+    public void dataOnConfirmationPageMustBeSame() {
+
+        SpartanConfirmationPage spartanConfirmationPage = new SpartanConfirmationPage();
+        Assert.assertEquals(spartanMap.get("name"), spartanConfirmationPage.name.getAttribute("value"));
+        Assert.assertEquals(spartanMap.get("gender"), spartanConfirmationPage.gender.getAttribute("value"));
+        Assert.assertEquals(spartanMap.get("phone"), spartanConfirmationPage.phone.getAttribute("value"));
 
     }
 
+    @And("data in database  must be mutch")
+    public void dataInDatabaseMustBeMutch() {
+      //  Map<String, Object> dbMap = DBUtils.getRowMap("SELECT * FROM spartans WHERE name = 'Wooden Tester'");
+     //   Assert.assertEquals(spartanMap.get("name"), dbMap.get("NAME"));
+     //   Assert.assertEquals(spartanMap.get("gender"), dbMap.get("GENDER"));
+       // Assert.assertEquals(spartanMap.get("phone"), dbMap.get("PHONE"));
+
+        Map<String, Object> dbMap = DBUtils.getRowMap("SELECT * FROM spartans WHERE name = 'krigora'");
+        Assert.assertEquals(spartanMap.get("name") , dbMap.get("NAME"));
+        Assert.assertEquals(spartanMap.get("gender") , dbMap.get("GENDER"));
+        Assert.assertEquals(spartanMap.get("phone") , dbMap.get("PHONE"));
+
+        //delete the spartan data after verification
+        DBUtils.executeQuery("DELETE FROM spartans WHERE name = 'krigora'");
+
+    }
 }
